@@ -1,0 +1,28 @@
+class ChatChannel {
+  constructor(name) {
+    this.name = name;
+    // Adding some test data to messages
+    this.messages = [{
+      text: `This is the first message in channel ${this.name}`,
+      user: 'Taut-Service',
+      timestamp: '1337',
+    }];
+  }
+
+  getMessages(req, res) {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.write(JSON.stringify(this.messages));
+    res.end();
+  }
+
+  addMessage(msgUser, msgText) {
+    const newMessage = {
+      text: msgText,
+      user: msgUser,
+      timestamp: Date.now(),
+    };
+    this.messages.push(newMessage);
+  }
+}
+
+module.exports = ChatChannel;

@@ -1,0 +1,20 @@
+{
+  "name": "taut",
+  "version": "1.0.0",
+  "description": "Clone of Slack/Discord created as first project for IGME-430 class. It's called 'taut' cause it's not Slack",
+  "main": "./server/index.js",
+  "scripts": {
+    "start": "node ./server/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "babel:watch": "babel --watch ./client --out-file ./static/bundle.js"
+  },
+  "author": "Luke Lapresi",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "eslint": "^4.17.0",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-import": "^2.8.0"
+  }
+}
