@@ -1,21 +1,15 @@
 const ChatChannel = require('./chatChannel.js');
 const query = require('querystring');
+const xss = require('xss');
 
 const url = require('url');
 
 const channels = [
-
+  new ChatChannel('testChannel'),
+  new ChatChannel('general'),
+  new ChatChannel('memes'),
+  new ChatChannel('cool-shit'),
 ];
-
-function addChannel(name) {
-  const c = new ChatChannel(name);
-  channels.push(c);
-}
-
-addChannel('testChannel');
-addChannel('general');
-addChannel('memes');
-addChannel('cool-shit');
 
 const parseQuery = (req, res, callback) => {
   let body = '';
@@ -71,7 +65,7 @@ const addMessageRoutes = (req, res) => {
   for (let i = 0; i < channels.length; i++) {
     if (parsedURL.pathname === `/channels/${channels[i].name}`) {
       parseQuery(req, res, (data) => {
-        channels[i].addMessage(data.user, data.message_text);
+        channels[i].addMessage(xss(data.user), xss(data.message_text));
         res.statusCode = 201;
         res.end();
         return true;
