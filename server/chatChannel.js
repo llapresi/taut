@@ -5,13 +5,13 @@ class ChatChannel {
     this.messages = [{
       text: `This is the first message in channel ${this.name}`,
       user: 'Taut-Service',
-      timestamp: '1337',
+      timestamp: 1337,
     }];
   }
 
-  getMessages(req, res) {
+  getMessages(req, res, timestamp) {
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.write(JSON.stringify(this.messages));
+    res.write(JSON.stringify(this.messages.filter(msg => msg.timestamp > timestamp)));
     res.end();
   }
 
