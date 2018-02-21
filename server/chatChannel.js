@@ -13,7 +13,7 @@ class ChatChannel {
     const returningMessages =
       JSON.stringify(this.messages.filter(msg => msg.timestamp > timestamp));
     if (returningMessages === '[]') {
-      res.writeHead(204, { 'Content-Type': 'application/json' });
+      res.statusCode = 204;
     } else {
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.write(JSON.stringify(this.messages.filter(msg => msg.timestamp > timestamp)));
