@@ -2,7 +2,7 @@ window.onload = () => {
   const content = document.getElementById('messages');
   const messageForm = document.getElementById('messageForm');
   const channelSelect = document.getElementById('channel-select');
-  let currentChannelURL = '/channels/testChannel';
+  let currentChannelURL = './channels/testChannel';
 
   let lastReceivedTimeStamp = 0;
 
@@ -60,7 +60,7 @@ window.onload = () => {
         e.preventDefault();
         console.log(channel.getAttribute('href'));
         clearInterval(msgLoop);
-        currentChannelURL = channel.getAttribute('href');
+        currentChannelURL = `.${channel.getAttribute('href')}`;
         lastReceivedTimeStamp = 0;
         content.innerHTML = '';
         console.log(currentChannelURL);
