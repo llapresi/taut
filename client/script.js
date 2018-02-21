@@ -1,6 +1,7 @@
 window.onload = () => {
   const content = document.getElementById('messages');
   const messageForm = document.getElementById('messageForm');
+  const channelSelect = document.getElementById('channel-select');
   let currentChannelURL = '/channels/testChannel';
 
   let lastReceivedTimeStamp = 0;
@@ -19,6 +20,19 @@ window.onload = () => {
     });
   }
 
+  function listServerChannels(callback) {
+    fetch('/channels', {
+      method: 'GET',
+    }).then(res => res.json()).then((data) => {
+      channelSelect.innerHTML = '';
+      data.channels.forEach((channel) => {
+        channelSelect.innerHTML = `${channelSelect.innerHTML}<a class="channel-link" href="/channels/${channel}">${channel}</a> `;
+      });
+      callback();
+    });
+  }
+
+  // Set-up message sending
   messageForm.addEventListener('submit', (e) => {
     e.preventDefault();
     const messageText = document.getElementById('message_text').value;
@@ -35,7 +49,26 @@ window.onload = () => {
   });
 
   // Setup our update loop
-  setInterval(() => {
+  let msgLoop = setInterval(() => {
     updateMessages();
-  }, 500);
+  }, 1000);
+
+  listServerChannels(() => {
+    const channelLinks = document.querySelectorAll('.channel-link');
+    channelLinks.forEach((channel) => {
+      channel.addEventListener('click', (e) => {
+        e.preventDefault();
+        console.log(channel.getAttribute('href'));
+        clearInterval(msgLoop);
+        currentChannelURL = channel.getAttribute('href');
+        lastReceivedTimeStamp = 0;
+        content.innerHTML = '';
+        console.log(currentChannelURL);
+        updateMessages();
+        msgLoop = setInterval(() => {
+          updateMessages();
+        }, 500);
+      });
+    });
+  });
 };

@@ -3,6 +3,7 @@
 window.onload = function () {
   var content = document.getElementById('messages');
   var messageForm = document.getElementById('messageForm');
+  var channelSelect = document.getElementById('channel-select');
   var currentChannelURL = '/channels/testChannel';
 
   var lastReceivedTimeStamp = 0;
@@ -25,6 +26,21 @@ window.onload = function () {
     });
   }
 
+  function listServerChannels(callback) {
+    fetch('/channels', {
+      method: 'GET'
+    }).then(function (res) {
+      return res.json();
+    }).then(function (data) {
+      channelSelect.innerHTML = '';
+      data.channels.forEach(function (channel) {
+        channelSelect.innerHTML = channelSelect.innerHTML + '<a class="channel-link" href="/channels/' + channel + '">' + channel + '</a> ';
+      });
+      callback();
+    });
+  }
+
+  // Set-up message sending
   messageForm.addEventListener('submit', function (e) {
     e.preventDefault();
     var messageText = document.getElementById('message_text').value;
@@ -41,7 +57,26 @@ window.onload = function () {
   });
 
   // Setup our update loop
-  setInterval(function () {
+  var msgLoop = setInterval(function () {
     updateMessages();
-  }, 500);
+  }, 1000);
+
+  listServerChannels(function () {
+    var channelLinks = document.querySelectorAll('.channel-link');
+    channelLinks.forEach(function (channel) {
+      channel.addEventListener('click', function (e) {
+        e.preventDefault();
+        console.log(channel.getAttribute('href'));
+        clearInterval(msgLoop);
+        currentChannelURL = channel.getAttribute('href');
+        lastReceivedTimeStamp = 0;
+        content.innerHTML = '';
+        console.log(currentChannelURL);
+        updateMessages();
+        msgLoop = setInterval(function () {
+          updateMessages();
+        }, 500);
+      });
+    });
+  });
 };
