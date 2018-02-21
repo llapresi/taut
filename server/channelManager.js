@@ -8,7 +8,7 @@ const channels = [
   new ChatChannel('testChannel'),
   new ChatChannel('general'),
   new ChatChannel('memes'),
-  new ChatChannel('cool-shit'),
+  new ChatChannel('cool-stuff'),
 ];
 
 const parseQuery = (req, res, callback) => {
