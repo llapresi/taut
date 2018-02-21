@@ -4,7 +4,7 @@ window.onload = function () {
   var content = document.getElementById('messages');
   var messageForm = document.getElementById('messageForm');
   var channelSelect = document.getElementById('channel-select');
-  var currentChannelURL = '/channels/testChannel';
+  var currentChannelURL = './channels/testChannel';
 
   var lastReceivedTimeStamp = 0;
 
@@ -12,7 +12,11 @@ window.onload = function () {
     fetch(currentChannelURL + '?latestTimestamp=' + lastReceivedTimeStamp, {
       method: 'GET'
     }).then(function (res) {
-      return res.json();
+      if (res.status === 200) {
+        return res.json();
+      } else {
+        return Response.error();
+      }
     }).then(function (data) {
       if (data.length > 0) {
         data.sort(function (a, b) {
@@ -68,7 +72,7 @@ window.onload = function () {
         e.preventDefault();
         console.log(channel.getAttribute('href'));
         clearInterval(msgLoop);
-        currentChannelURL = channel.getAttribute('href');
+        currentChannelURL = '.' + channel.getAttribute('href');
         lastReceivedTimeStamp = 0;
         content.innerHTML = '';
         console.log(currentChannelURL);

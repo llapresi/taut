@@ -68,8 +68,8 @@ const addMessageRoutes = (req, res) => {
         channels[i].addMessage(xss(data.user), xss(data.message_text));
         res.statusCode = 201;
         res.end();
-        return true;
       });
+      return true;
     }
   }
   return false;

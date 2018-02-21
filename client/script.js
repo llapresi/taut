@@ -9,7 +9,13 @@ window.onload = () => {
   function updateMessages() {
     fetch(`${currentChannelURL}?latestTimestamp=${lastReceivedTimeStamp}`, {
       method: 'GET',
-    }).then(res => res.json()).then((data) => {
+    }).then((res) => {
+      if (res.status === 200) {
+        return res.json()
+      } else {
+        return Response.error()
+      }
+    }).then((data) => {
       if (data.length > 0) {
         data.sort((a, b) => a.timestamp - b.timestamp);
         data.forEach((msg) => {
