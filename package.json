@@ -10,6 +10,10 @@
     "babel:watch": "babel --watch ./client --out-file ./static/bundle.js",
     "babel": "babel ./client --out-file ./static/bundle.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/llapresi/taut-api-prototype.git"
+  },
   "author": "Luke Lapresi",
   "license": "ISC",
   "dependencies": {
