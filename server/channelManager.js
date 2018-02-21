@@ -47,9 +47,15 @@ const listChannels = (req, res) => {
 const getMessageRoutes = (req, res) => {
   const parsedURL = url.parse(req.url);
   const parsedQuery = query.parse(parsedURL.query);
+  let timeStamp = 0;
+
+  if (parsedQuery.latestTimestamp !== undefined) {
+    timeStamp = parsedQuery.latestTimestamp;
+  }
+
   for (let i = 0; i < channels.length; i++) {
     if (parsedURL.pathname === `/channels/${channels[i].name}`) {
-      channels[i].getMessages(req, res, parsedQuery.latestTimestamp);
+      channels[i].getMessages(req, res, timeStamp);
       return true;
     }
   }
