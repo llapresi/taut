@@ -10,7 +10,8 @@ class ChatChannel {
   }
 
   getMessages(req, res, timestamp) {
-    const returningMessages = JSON.stringify(this.messages.filter(msg => msg.timestamp > timestamp));
+    const returningMessages =
+      JSON.stringify(this.messages.filter(msg => msg.timestamp > timestamp));
     if (returningMessages === '[]') {
       res.writeHead(204, { 'Content-Type': 'application/json' });
     } else {
