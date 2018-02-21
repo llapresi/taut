@@ -5,8 +5,10 @@
   "main": "./server/index.js",
   "scripts": {
     "start": "node ./server/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "babel:watch": "babel --watch ./client --out-file ./static/bundle.js"
+    "pretest": "eslint ./src --fix",
+    "test": "echo \"Tests Completed\"",
+    "babel:watch": "babel --watch ./client --out-file ./static/bundle.js",
+    "babel": "babel ./client --out-file ./static/bundle.js"
   },
   "author": "Luke Lapresi",
   "license": "ISC",
