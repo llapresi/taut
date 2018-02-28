@@ -3,16 +3,29 @@
     <head>
         <title>Taut - It ain't Slack</title>
         <script src="bundle.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css">
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:700|Roboto:400,700" rel="stylesheet">
+        <link rel="stylesheet" href="style.css">
     </head>
     <body>
-        <h1>Taut - It aint' Slack</h1>
-        <p>and it isn't Discord either</p>
-        <section id="channel-select"></section>
-        <div id="messages"></div>
-        <form id="messageForm" action="/messageTest" method="post">
-            User: <input type="text" id="message_user"><br/>
-            Message: <input type="text" id="message_text">
-            <button type="submit">Send</button>
+        <section class="sidebar-menu">
+            <h1>taut</h1>
+            <div id="channel-menu">
+                <h3>Channels:</h3>
+                <section id="channel-select"></section>
+            </div>
+        </section>
+        
+        <section class="main-section" id="messages-parent">
+            <div id="messages"></div>
+        </section>
+
+        <form id="messageForm" action="/messageTest" method="post" autocomplete="off">
+            <div id="formWrapper">
+                <div>Username: <input type="text" id="message_user"></div>
+                <div>Message: <input type="text" id="message_text"><button type="submit">Send</button></div>
+            </div>
         </form>
     </body>
 </html>

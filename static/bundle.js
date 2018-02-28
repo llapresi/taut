@@ -4,6 +4,7 @@ window.onload = function () {
   var content = document.getElementById('messages');
   var messageForm = document.getElementById('messageForm');
   var channelSelect = document.getElementById('channel-select');
+  var contentParent = document.getElementById('messages-parent');
   var currentChannelURL = './channels/testChannel';
 
   var lastReceivedTimeStamp = 0;
@@ -14,18 +15,25 @@ window.onload = function () {
     }).then(function (res) {
       if (res.status === 200) {
         return res.json();
-      } else {
-        return Response.error();
       }
+      return Response.error();
     }).then(function (data) {
       if (data.length > 0) {
         data.sort(function (a, b) {
           return a.timestamp - b.timestamp;
         });
-        data.forEach(function (msg) {
-          content.innerHTML += '<br/><span class="message"><span class="message--user">' + msg.user + ': </span>' + msg.text + '</span>';
+        data.forEach(function (msg, idx, array) {
+          var newMessage = document.createElement('span');
+          newMessage.className = 'message';
+          if (idx === array.length - 1) {
+            newMessage.className = 'message new-message';
+          }
+          newMessage.innerHTML = '<span class="message--user">' + msg.user + ': </span>' + msg.text;
+          content.appendChild(newMessage);
         });
         lastReceivedTimeStamp = data[data.length - 1].timestamp;
+        contentParent.scrollTop = contentParent.scrollHeight;
+        document.getElementById('message_text').value = '';
       }
     });
   }
@@ -38,7 +46,7 @@ window.onload = function () {
     }).then(function (data) {
       channelSelect.innerHTML = '';
       data.channels.forEach(function (channel) {
-        channelSelect.innerHTML = channelSelect.innerHTML + '<a class="channel-link" href="/channels/' + channel + '">' + channel + '</a> ';
+        channelSelect.innerHTML = channelSelect.innerHTML + '<a class="channel-link" href="/channels/' + channel + '" id="' + channel + '">' + channel + '</a> ';
       });
       callback();
     });
@@ -61,26 +69,37 @@ window.onload = function () {
   });
 
   // Setup our update loop
-  var msgLoop = setInterval(function () {
+  var msgLoop = {};
+
+  var setCurrentChatChannel = function setCurrentChatChannel(channelURL) {
+    clearInterval(msgLoop);
+    currentChannelURL = '.' + channelURL;
+    lastReceivedTimeStamp = 0;
+    content.innerHTML = '';
+    console.log(currentChannelURL);
     updateMessages();
-  }, 1000);
+    msgLoop = setInterval(function () {
+      updateMessages();
+    }, 800);
+  };
 
   listServerChannels(function () {
     var channelLinks = document.querySelectorAll('.channel-link');
     channelLinks.forEach(function (channel) {
       channel.addEventListener('click', function (e) {
         e.preventDefault();
-        console.log(channel.getAttribute('href'));
-        clearInterval(msgLoop);
-        currentChannelURL = '.' + channel.getAttribute('href');
-        lastReceivedTimeStamp = 0;
-        content.innerHTML = '';
-        console.log(currentChannelURL);
-        updateMessages();
-        msgLoop = setInterval(function () {
-          updateMessages();
-        }, 500);
+        setCurrentChatChannel(channel.getAttribute('href'));
+        // Set active channel style
+        channelLinks.forEach(function (c) {
+          var q = c;
+          q.className = '';
+        });
+        var q = channel;
+        q.className = 'channel-open';
       });
     });
+    document.getElementById('testChannel').className = 'channel-open';
   });
+
+  setCurrentChatChannel(currentChannelURL);
 };

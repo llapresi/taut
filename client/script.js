@@ -2,6 +2,7 @@ window.onload = () => {
   const content = document.getElementById('messages');
   const messageForm = document.getElementById('messageForm');
   const channelSelect = document.getElementById('channel-select');
+  const contentParent = document.getElementById('messages-parent');
   let currentChannelURL = './channels/testChannel';
 
   let lastReceivedTimeStamp = 0;
@@ -11,17 +12,24 @@ window.onload = () => {
       method: 'GET',
     }).then((res) => {
       if (res.status === 200) {
-        return res.json()
-      } else {
-        return Response.error()
+        return res.json();
       }
+      return Response.error();
     }).then((data) => {
       if (data.length > 0) {
         data.sort((a, b) => a.timestamp - b.timestamp);
-        data.forEach((msg) => {
-          content.innerHTML += `<br/><span class="message"><span class="message--user">${msg.user}: </span>${msg.text}</span>`;
+        data.forEach((msg, idx, array) => {
+          const newMessage = document.createElement('span');
+          newMessage.className = 'message';
+          if (idx === array.length - 1) {
+            newMessage.className = 'message new-message';
+          }
+          newMessage.innerHTML = `<span class="message--user">${msg.user}: </span>${msg.text}`;
+          content.appendChild(newMessage);
         });
         lastReceivedTimeStamp = data[data.length - 1].timestamp;
+        contentParent.scrollTop = contentParent.scrollHeight;
+        document.getElementById('message_text').value = '';
       }
     });
   }
@@ -32,7 +40,7 @@ window.onload = () => {
     }).then(res => res.json()).then((data) => {
       channelSelect.innerHTML = '';
       data.channels.forEach((channel) => {
-        channelSelect.innerHTML = `${channelSelect.innerHTML}<a class="channel-link" href="/channels/${channel}">${channel}</a> `;
+        channelSelect.innerHTML = `${channelSelect.innerHTML}<a class="channel-link" href="/channels/${channel}" id="${channel}">${channel}</a> `;
       });
       callback();
     });
@@ -55,26 +63,37 @@ window.onload = () => {
   });
 
   // Setup our update loop
-  let msgLoop = setInterval(() => {
+  let msgLoop = {};
+
+  const setCurrentChatChannel = (channelURL) => {
+    clearInterval(msgLoop);
+    currentChannelURL = `.${channelURL}`;
+    lastReceivedTimeStamp = 0;
+    content.innerHTML = '';
+    console.log(currentChannelURL);
     updateMessages();
-  }, 1000);
+    msgLoop = setInterval(() => {
+      updateMessages();
+    }, 800);
+  };
 
   listServerChannels(() => {
     const channelLinks = document.querySelectorAll('.channel-link');
     channelLinks.forEach((channel) => {
       channel.addEventListener('click', (e) => {
         e.preventDefault();
-        console.log(channel.getAttribute('href'));
-        clearInterval(msgLoop);
-        currentChannelURL = `.${channel.getAttribute('href')}`;
-        lastReceivedTimeStamp = 0;
-        content.innerHTML = '';
-        console.log(currentChannelURL);
-        updateMessages();
-        msgLoop = setInterval(() => {
-          updateMessages();
-        }, 500);
+        setCurrentChatChannel(channel.getAttribute('href'));
+        // Set active channel style
+        channelLinks.forEach((c) => {
+          const q = c;
+          q.className = '';
+        });
+        const q = channel;
+        q.className = 'channel-open';
       });
     });
+    document.getElementById('testChannel').className = 'channel-open';
   });
+
+  setCurrentChatChannel(currentChannelURL);
 };
