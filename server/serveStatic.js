@@ -34,5 +34,17 @@ const getStaticFile = (req, res) => {
   return false;
 };
 
+const getStaticHead = (req, res) => {
+  for (let i = 0; i < staticFiles.length; i++) {
+    if (staticFiles[i].path === req.url) {
+      res.writeHead(200, { 'Content-Type': staticFiles[i].mimeType });
+      res.end();
+      return true;
+    }
+  }
+  return false;
+};
+
 module.exports.getIndex = getIndex;
 module.exports.getStaticFile = getStaticFile;
+module.exports.getStaticHead = getStaticHead;

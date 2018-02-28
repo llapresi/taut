@@ -17,6 +17,13 @@ http.createServer((req, res) => {
       res.statusCode = 404;
       res.end();
     }
+  } else if (req.method === 'HEAD') {
+    if (serveStatic.getStaticHead(req, res) === false) {
+      if (channelManager.getMessageHeadRoute(req, res) === false) {
+        res.statusCode = 404;
+        res.end();
+      }
+    }
   }
 }).listen(port);
 

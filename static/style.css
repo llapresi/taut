@@ -153,3 +153,13 @@ h1 {
     left: 0;
   }
 }
+
+@media (max-height: 400px){
+  .main-section {
+    bottom: 25%;
+  }
+
+  #messageForm {
+    top: 75%;
+  }
+}

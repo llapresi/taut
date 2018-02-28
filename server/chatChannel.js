@@ -26,8 +26,10 @@ class ChatChannel {
       text: msgText,
       user: msgUser,
       timestamp: Date.now(),
+      msgID: this.nextMsgID,
     };
     this.messages.push(newMessage);
+    this.nextMsgID += 1;
   }
 }
 

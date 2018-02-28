@@ -66,6 +66,24 @@ const getMessageRoutes = (req, res) => {
   return false;
 };
 
+const getMessageHeadRoute = (req, res) => {
+  const parsedURL = url.parse(req.url);
+
+  for (let i = 0; i < channels.length; i++) {
+    if (parsedURL.pathname === `/channels/${channels[i].name}`) {
+      res.writeHead(200, { 'Content-Type': 'application/json' });
+      res.end();
+      return true;
+    }
+  }
+  if (req.url === '/channels') {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end();
+    return true;
+  }
+  return false;
+};
+
 const addMessageRoutes = (req, res) => {
   const parsedURL = url.parse(req.url);
   for (let i = 0; i < channels.length; i++) {
@@ -82,4 +100,5 @@ const addMessageRoutes = (req, res) => {
 };
 
 module.exports.getMessageRoutes = getMessageRoutes;
+module.exports.getMessageHeadRoute = getMessageHeadRoute;
 module.exports.addMessageRoutes = addMessageRoutes;
